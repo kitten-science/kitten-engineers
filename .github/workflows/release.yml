@@ -1,0 +1,152 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        default: true
+        description: Only create a test release, without moving the tags?
+        required: false
+        type: boolean
+      dry-run-tag:
+        description: Release tag to assume.
+        type: string
+        required: false
+      wants-github-release:
+        default: true
+        description: Create a GitHub release?
+        required: false
+        type: boolean
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  DEV_BUILD: false
+  KE_RELEASE_CHANNEL: stable
+  # renovate: datasource=node-version depName=node versioning=node
+  NODE_VERSION: "22.14.0"
+
+jobs:
+  changelog:
+    name: Changelog
+    outputs:
+      major: ${{ steps.changelog.outputs.major-total }}
+      minor: ${{ steps.changelog.outputs.minor-total }}
+      patch: ${{ steps.changelog.outputs.patch-total }}
+      lifecycle: ${{ steps.changelog.outputs.lifecycle-total }}
+      version: ${{ steps.changelog.outputs.version-dev-extended }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Extract current version
+        run: |
+          echo "ROOT_VERSION=$(jq --raw-output '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Generate Changelog
+        id: changelog
+        uses: oliversalzburg/action-automatic-semantic-releases@b9b98292517b8c8e0174f7430c269ac70990bf95 # v0.5.3
+        with:
+          automatic-release-tag: ${{ inputs.dry-run-tag || 'next' }}
+          changelog-artifact: changelog.json
+          dry-run: true
+          publish: false
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          root-version: ${{ env.ROOT_VERSION }}
+
+      - name: Store Changelog
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+        with:
+          name: changelog.json
+          path: changelog.json
+
+      - name: Show change counts
+        env:
+          MAJOR: ${{ steps.changelog.outputs.major-total }}
+          MINOR: ${{ steps.changelog.outputs.minor-total }}
+          PATCH: ${{ steps.changelog.outputs.patch-total }}
+          LIFECYCLE: ${{ steps.changelog.outputs.lifecycle-total }}
+          VERSION: ${{ steps.changelog.outputs.version-dev-extended }}
+        run: |
+          echo Major changes: $MAJOR
+          echo Minor changes: $MINOR
+          echo Patch changes: $PATCH
+          echo Lifecycle changes: $LIFECYCLE
+          echo Pre-Release should use version: $VERSION
+
+  qa:
+    name: 🔹 QA
+    uses: ./.github/workflows/qa.yml
+
+  release:
+    name: Release
+    needs:
+      - qa
+      - versions
+    permissions:
+      actions: write
+      attestations: write
+      contents: write
+      id-token: write
+      packages: write
+      pull-requests: read
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
+
+      - name: Select NodeJS version
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          yarn config set enableGlobalCache false
+
+      - name: Load cached dependencies
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node${{ env.NODE_VERSION }}
+
+      - name: Build release
+        env:
+          RELEASE_VERSION: ${{ needs.changelog.outputs.version }}
+        run: |
+          make injectable userscript
+
+      - name: Generate GitHub release
+        if: success() && inputs.wants-github-release
+        uses: oliversalzburg/action-automatic-semantic-releases@b9b98292517b8c8e0174f7430c269ac70990bf95 # v0.5.3
+        with:
+          automatic-release-tag: ${{ inputs.dry-run-tag }}
+          draft: true
+          dry-run: ${{ inputs.dry-run }}
+          files: |
+            output/*
+          merge-similar: true
+          prerelease: false
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          title: v${{ needs.versions.outputs.RELEASE_VERSION }}
+          with-authors: false

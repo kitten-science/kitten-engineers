@@ -1,0 +1,68 @@
+name: QA
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "**"
+      - "!main"
+  workflow_call:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa-commit:
+    name: QA Commit
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
+
+      - name: Validate commit messages
+        uses: oliversalzburg/action-commit-validator@9e8790c9ddf43af8762a8f802ca677c057ddf3f5 # v2.0.0
+        if: github.event_name == 'pull_request'
+        with:
+          accept-breaking-changes: false
+          accept-emoji: false
+          accepted-scopes: |
+            bonfire
+            religion
+            science
+            space
+            time
+            trade
+            village
+            workshop
+
+            api
+            build
+            container
+            core
+            deps
+            deps-dev
+            filters
+            i18n
+            schema
+            settings
+            ui
+          accepted-types: |
+            chore
+            ci
+            docs
+            feat
+            fix
+            refactor
+            test
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  qa:
+    name: 🔹 QA
+    uses: oliversalzburg/workflows/.github/workflows/qa-browser-app.yml@main

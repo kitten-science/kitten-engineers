@@ -1,0 +1,176 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: nightly
+  cancel-in-progress: true
+
+env:
+  DEV_BUILD: false
+  KE_RELEASE_CHANNEL: nightly
+  NIGHTLY_BUILD: true
+  # renovate: datasource=node-version depName=node versioning=node
+  NODE_VERSION: "22.14.0"
+
+jobs:
+  check_date:
+    runs-on: ubuntu-24.04
+    name: Check latest commit
+    outputs:
+      should_run: ${{ steps.should_run.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: print latest_commit
+        run: echo ${{ github.sha }}
+
+      - id: should_run
+        continue-on-error: true
+        name: check latest commit is less than a day
+        if: ${{ github.event_name == 'schedule' }}
+        run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "name=should_run::false" >> $GITHUB_OUTPUT
+
+  changelog:
+    if: success() && ${{ needs.check_date.outputs.should_run != 'false' }}
+    name: Changelog
+    needs:
+      - check_date
+    outputs:
+      major: ${{ steps.changelog.outputs.major-total }}
+      minor: ${{ steps.changelog.outputs.minor-total }}
+      patch: ${{ steps.changelog.outputs.patch-total }}
+      lifecycle: ${{ steps.changelog.outputs.lifecycle-total }}
+      version: ${{ steps.changelog.outputs.version-nightly-extended }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            package.json
+          sparse-checkout-cone-mode: false
+
+      - name: Extract current version
+        run: |
+          echo "ROOT_VERSION=$(jq --raw-output '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Generate Changelog
+        id: changelog
+        uses: oliversalzburg/action-automatic-semantic-releases@b9b98292517b8c8e0174f7430c269ac70990bf95 # v0.5.3
+        with:
+          automatic-release-tag: nightly
+          changelog-artifact: changelog.json
+          dry-run: true
+          publish: false
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          root-version: ${{ env.ROOT_VERSION }}
+
+      - name: Store Changelog
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+        with:
+          name: changelog.json
+          path: changelog.json
+
+      - name: Show change counts
+        env:
+          MAJOR: ${{ steps.changelog.outputs.major-total }}
+          MINOR: ${{ steps.changelog.outputs.minor-total }}
+          PATCH: ${{ steps.changelog.outputs.patch-total }}
+          LIFECYCLE: ${{ steps.changelog.outputs.lifecycle-total }}
+          VERSION: ${{ steps.changelog.outputs.version-dev-extended }}
+        run: |
+          echo Major changes: $MAJOR
+          echo Minor changes: $MINOR
+          echo Patch changes: $PATCH
+          echo Lifecycle changes: $LIFECYCLE
+          echo Pre-Release should use version: $VERSION
+
+  qa:
+    if: success() && needs.check_date.outputs.should_run != 'false'
+    name: 🔹 QA
+    needs:
+      - check_date
+    uses: ./.github/workflows/qa.yml
+
+  nightly:
+    if: success() && needs.check_date.outputs.should_run != 'false' && ( needs.changelog.outputs.major != '0' || needs.changelog.outputs.minor != '0' || needs.changelog.outputs.patch != '0' )
+    name: Nightly
+    needs:
+      - check_date
+      - changelog
+      - qa
+    permissions:
+      actions: write
+      attestations: write
+      contents: write
+      id-token: write
+      packages: write
+      pull-requests: read
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Select NodeJS version
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          yarn config set enableGlobalCache false
+
+      - name: Load cached dependencies
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node${{ env.NODE_VERSION }}
+
+      - name: Build release
+        env:
+          RELEASE_VERSION: ${{ needs.changelog.outputs.version }}
+        run: |
+          make devcontainer userscript
+
+      - name: Download changelog
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
+        with:
+          name: changelog.json
+
+      - name: Generate GitHub release
+        id: changelog
+        uses: oliversalzburg/action-automatic-semantic-releases@b9b98292517b8c8e0174f7430c269ac70990bf95 # v0.5.3
+        with:
+          automatic-release-tag: nightly
+          changelog-artifact: changelog.json
+          draft: false
+          files: |
+            output/*
+          merge-similar: true
+          prerelease: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          title: Nightly Build v${{ needs.changelog.outputs.version }}
+          with-authors: false
+
+      - name: Show change counts
+        env:
+          MAJOR: ${{ steps.changelog.outputs.major }}
+          MINOR: ${{ steps.changelog.outputs.minor }}
+          PATCH: ${{ steps.changelog.outputs.patch }}
+          LIFECYCLE: ${{ steps.changelog.outputs.lifecycle }}
+        run: |
+          echo Major changes: $MAJOR
+          echo Minor changes: $MINOR
+          echo Patch changes: $PATCH
+          echo Lifecycle changes: $LIFECYCLE
