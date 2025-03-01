@@ -14,6 +14,10 @@
     "url": "https://github.com/kitten-science/kitten-engineers/issues"
   },
   "type": "module",
+  "scripts": {
+    "preversion": "make lint test",
+    "postversion": "git push"
+  },
   "exports": {
     "./*.js": {
       "types": "./lib/*.d.ts",
@@ -23,17 +27,6 @@
   "files": [
     "lib"
   ],
-  "scripts": {
-    "build": "yarn run build:all",
-    "ke:build": "vite --config vite.config.inject.js build",
-    "ke:preview": "DEV_BUILD=true vite --config vite.config.userscript.js build",
-    "ke:release": "MINIFY=true vite --config vite.config.userscript.js build; vite --config vite.config.userscript.js build",
-    "ke:version": "node version.cjs",
-    "ke:watch": "vite --config vite.config.inject.js build --watch",
-    "lint": "yarn run lint:all",
-    "test": "echo This project has no tests.",
-    "whoami": "echo kitten-engineers"
-  },
   "dependencies": {
     "@kitten-science/kitten-analysts": "0.0.1-dev-6775fe6",
     "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-ed7e6ea",
