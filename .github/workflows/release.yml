@@ -139,13 +139,13 @@ jobs:
         uses: oliversalzburg/action-automatic-semantic-releases@db96c81b334bf45a3e971b5d46ee6b63d523a472 # v0.5.6
         with:
           draft: true
-          dry-run: ${{ inputs.dry-run }}
+          dry-run: ${{ inputs.dry-run || false }}
           files: |
             output/*
           merge-similar: true
           prerelease: false
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          title: v${{ needs.versions.outputs.RELEASE_VERSION }}
+          title: v${{ needs.changelog.outputs.version }}
           with-authors: false
 
   publish-npm:
