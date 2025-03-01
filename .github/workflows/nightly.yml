@@ -10,9 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEV_BUILD: false
   KE_RELEASE_CHANNEL: nightly
-  NIGHTLY_BUILD: true
   # renovate: datasource=node-version depName=node versioning=node
   NODE_VERSION: "22.14.0"
 
@@ -43,7 +41,7 @@ jobs:
       minor: ${{ steps.changelog.outputs.minor-total }}
       patch: ${{ steps.changelog.outputs.patch-total }}
       lifecycle: ${{ steps.changelog.outputs.lifecycle-total }}
-      version: ${{ steps.changelog.outputs.version-nightly-extended }}
+      version: ${{ steps.changelog.outputs.version-patch-nightly-extended }}
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -83,13 +81,13 @@ jobs:
           MINOR: ${{ steps.changelog.outputs.minor-total }}
           PATCH: ${{ steps.changelog.outputs.patch-total }}
           LIFECYCLE: ${{ steps.changelog.outputs.lifecycle-total }}
-          VERSION: ${{ steps.changelog.outputs.version-nightly-extended }}
+          VERSION: ${{ steps.changelog.outputs.version-patch-nightly-extended }}
         run: |
           echo Major changes: $MAJOR
           echo Minor changes: $MINOR
           echo Patch changes: $PATCH
           echo Lifecycle changes: $LIFECYCLE
-          echo Pre-Release should use version: $VERSION
+          echo Nightly should use version: $VERSION
 
   qa:
     if: success() && needs.check_date.outputs.should_run != 'false'
@@ -117,8 +115,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
 
-      - name: Select NodeJS version
+      - name: Select Node.js version
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -141,7 +141,7 @@ jobs:
         env:
           RELEASE_VERSION: ${{ needs.changelog.outputs.version }}
         run: |
-          make devcontainer userscript
+          make injectable userscript
 
       - name: Download changelog
         uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
@@ -163,14 +163,20 @@ jobs:
           title: Nightly Build v${{ needs.changelog.outputs.version }}
           with-authors: false
 
-      - name: Show change counts
-        env:
-          MAJOR: ${{ steps.changelog.outputs.major }}
-          MINOR: ${{ steps.changelog.outputs.minor }}
-          PATCH: ${{ steps.changelog.outputs.patch }}
-          LIFECYCLE: ${{ steps.changelog.outputs.lifecycle }}
-        run: |
-          echo Major changes: $MAJOR
-          echo Minor changes: $MINOR
-          echo Patch changes: $PATCH
-          echo Lifecycle changes: $LIFECYCLE
+  publish-npm:
+    name: 🔹 Publish npm
+    needs:
+      - changelog
+      - qa
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+      pages: write
+      pull-requests: read
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
+    with:
+      is-canary: false
+      version: ${{ needs.changelog.outputs.version }}

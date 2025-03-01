@@ -7,6 +7,7 @@ const KE_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.ver
 
 export default defineConfig({
   build: {
+    emptyOutDir: false,
     lib: {
       entry: "source/entrypoint-userscript.ts",
       name: "kitten-engineers",
