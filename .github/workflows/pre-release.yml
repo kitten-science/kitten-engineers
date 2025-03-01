@@ -161,6 +161,7 @@ jobs:
           with-authors: false
 
   publish-npm:
+    if: success() && github.event_name == 'workflow_dispatch' && inputs.dry-run == false
     name: 🔹 Publish npm
     needs:
       - changelog
