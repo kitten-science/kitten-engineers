@@ -360,22 +360,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kitten-science/kitten-analysts@npm:0.0.1-dev-6775fe6":
-  version: 0.0.1-dev-6775fe6
-  resolution: "@kitten-science/kitten-analysts@npm:0.0.1-dev-6775fe6"
+"@kitten-science/kitten-analysts@npm:0.0.5":
+  version: 0.0.5
+  resolution: "@kitten-science/kitten-analysts@npm:0.0.5"
   dependencies:
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@koa/bodyparser": "npm:5.1.1"
     "@koa/cors": "npm:5.0.0"
     "@oliversalzburg/js-utils": "npm:0.2.8"
     jsdom: "npm:26.0.0"
-    koa: "npm:2.15.4"
+    koa: "npm:2.16.0"
     koa-router: "npm:13.0.1"
     lz-string: "npm:1.5.0"
     prom-client: "npm:15.1.3"
     tslib: "npm:2.8.1"
     ws: "npm:8.18.1"
-  checksum: 10c0/2f3980ae30c9cc52e5b72883475ed3cb41c3a848dc262691832acf11bef0420eb3379c6e93af1a83a8eca092eb6d7f4771250bd91ac2aba2bdbd0446677675b1
+  checksum: 10c0/39cd7eb8635ff9f30e957b7ee5775777c819c431f22237a47b817f79fd4da89091df7478e18e09d5b004416e94b76215dcc33379c373fe48c3f57e2d5208ad52
   languageName: node
   linkType: hard
 
@@ -384,7 +384,7 @@ __metadata:
   resolution: "@kitten-science/kitten-engineers@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@kitten-science/kitten-analysts": "npm:0.0.1-dev-6775fe6"
+    "@kitten-science/kitten-analysts": "npm:0.0.5"
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@oliversalzburg/js-utils": "npm:0.2.8"
     "@types/web": "npm:0.0.207"
@@ -1611,9 +1611,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:2.15.4":
-  version: 2.15.4
-  resolution: "koa@npm:2.15.4"
+"koa@npm:2.16.0":
+  version: 2.16.0
+  resolution: "koa@npm:2.16.0"
   dependencies:
     accepts: "npm:^1.3.5"
     cache-content-type: "npm:^1.0.0"
@@ -1638,7 +1638,7 @@ __metadata:
     statuses: "npm:^1.5.0"
     type-is: "npm:^1.6.16"
     vary: "npm:^1.1.2"
-  checksum: 10c0/fd2171b4dba706d35244fe60403a61671717a167453349813757999dad280049ddd0dcdba23cda197a5a3538f4c034cf0fd1f9caeb849be1ca1eecaa78db2f99
+  checksum: 10c0/7416042e6b47b6eaf7131e57fa1857ca3e695ddff4088bf228c85d4ba1c4dc9510ab4aaaff5466bcc5df5e81370532edd15939095c796226a95f068306c8436e
   languageName: node
   linkType: hard
 
