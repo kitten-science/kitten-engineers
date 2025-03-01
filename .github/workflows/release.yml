@@ -135,7 +135,7 @@ jobs:
           make injectable userscript
 
       - name: Generate GitHub release
-        if: success() && inputs.wants-github-release
+        if: success() && ( github.event_name == 'push' || inputs.wants-github-release )
         uses: oliversalzburg/action-automatic-semantic-releases@db96c81b334bf45a3e971b5d46ee6b63d523a472 # v0.5.6
         with:
           draft: true
