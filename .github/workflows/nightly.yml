@@ -167,6 +167,7 @@ jobs:
     name: 🔹 Publish npm
     needs:
       - changelog
+      - check_date
       - qa
     permissions:
       contents: write
