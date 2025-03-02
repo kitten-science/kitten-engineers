@@ -9,7 +9,7 @@ const filename = ["kitten-engineers", `-${versionString}`, minify ? ".min" : "",
   "",
 );
 
-const KE_RELEASE_CHANNEL = JSON.stringify(process.env.KE_RELEASE_CHANNEL ?? "fixed");
+const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
 const KE_VERSION = JSON.stringify(versionString);
 
 export default defineConfig({
@@ -41,7 +41,7 @@ export default defineConfig({
     },
   },
   define: {
-    KE_RELEASE_CHANNEL,
+    RELEASE_CHANNEL,
     KE_VERSION,
   },
 });
