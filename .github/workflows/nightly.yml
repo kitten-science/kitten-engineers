@@ -179,5 +179,6 @@ jobs:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     uses: oliversalzburg/workflows/.github/workflows/frag-publish-npm.yml@main
     with:
-      is-canary: false
+      is-canary: true
+      npm-dist-tag: nightly
       version: ${{ needs.changelog.outputs.version }}
