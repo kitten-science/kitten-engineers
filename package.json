@@ -28,7 +28,7 @@
     "lib"
   ],
   "dependencies": {
-    "@kitten-science/kitten-analysts": "0.0.5",
+    "@kitten-science/kitten-analysts": "0.0.6",
     "@kitten-science/kitten-scientists": "2.0.0-beta.10-dev-ed7e6ea",
     "@oliversalzburg/js-utils": "0.2.8",
     "tslib": "2.8.1"
