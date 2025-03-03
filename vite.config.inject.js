@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 const filename = "kitten-engineers.inject.js";
 
 const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
-const KE_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.version}-live`);
+const RELEASE_VERSION = JSON.stringify(process.env.RELEASE_VERSION ?? `${manifest.version}-live`);
 
 export default defineConfig({
   build: {
@@ -26,6 +26,6 @@ export default defineConfig({
   },
   define: {
     RELEASE_CHANNEL,
-    KE_VERSION,
+    RELEASE_VERSION,
   },
 });

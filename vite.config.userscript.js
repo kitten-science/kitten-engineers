@@ -10,7 +10,7 @@ const filename = ["kitten-engineers", `-${versionString}`, minify ? ".min" : "",
 );
 
 const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
-const KE_VERSION = JSON.stringify(versionString);
+const RELEASE_VERSION = JSON.stringify(versionString);
 
 export default defineConfig({
   plugins: [
@@ -42,6 +42,6 @@ export default defineConfig({
   },
   define: {
     RELEASE_CHANNEL,
-    KE_VERSION,
+    RELEASE_VERSION,
   },
 });
