@@ -26,11 +26,6 @@ on:
         description: Publish npm package?
         type: boolean
         required: false
-      publish-oci:
-        default: false
-        description: Publish container?
-        type: boolean
-        required: false
       release-tag:
         default: dev
         description: Floating pre-release tag to use.
@@ -53,7 +48,6 @@ jobs:
       publish-documentation: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-documentation || 'false' }}
       publish-github-release: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-github-release || 'false' }}
       publish-npm: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-npm || 'false' }}
-      publish-oci: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-oci || 'false' }}
       release-tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || 'dev' }}
       release-channel: dev
     permissions:
@@ -82,8 +76,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           persist-credentials: false
-          sparse-checkout: |
-            package.json
+          sparse-checkout: package.json
           sparse-checkout-cone-mode: false
 
       - id: version
@@ -171,8 +164,7 @@ jobs:
           changelog-artifact: changelog.json
           draft: true
           dry-run: ${{ needs.params.outputs.move-tags == 'false' }}
-          files: |
-            output/*
+          files: output/*
           merge-similar: true
           prerelease: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}

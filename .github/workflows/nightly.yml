@@ -25,11 +25,6 @@ on:
         description: Publish npm package?
         type: boolean
         required: false
-      publish-oci:
-        default: false
-        description: Publish container?
-        type: boolean
-        required: false
       release-tag:
         default: nightly
         description: Floating pre-release tag to use.
@@ -52,7 +47,6 @@ jobs:
       publish-documentation: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-documentation || 'false' }}
       publish-github-release: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-github-release || 'false' }}
       publish-npm: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-npm || 'false' }}
-      publish-oci: ${{ github.event_name == 'workflow_dispatch' && inputs.publish-oci || 'false' }}
       release-tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release-tag || 'nightly' }}
       release-channel: nightly
     permissions:
