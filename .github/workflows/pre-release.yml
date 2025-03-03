@@ -88,11 +88,10 @@ jobs:
 
       - id: version
         name: Extract current version
-        run: |
-          echo "root-version=$(jq --raw-output '.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "root-version=$(jq --raw-output '.version' package.json)" >> $GITHUB_OUTPUT
 
       - id: changelog
-        name: Generate Changelog
+        name: Generate changelog
         uses: oliversalzburg/action-automatic-semantic-releases@db96c81b334bf45a3e971b5d46ee6b63d523a472 # v0.5.6
         with:
           automatic-release-tag: ${{ needs.params.outputs.release-tag }}
@@ -102,7 +101,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           root-version: ${{ steps.version.outputs.root-version }}
 
-      - name: Store Changelog
+      - name: Store changelog
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: changelog.json
