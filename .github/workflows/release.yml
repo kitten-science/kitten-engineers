@@ -60,11 +60,9 @@ jobs:
 
   changelog:
     name: Changelog
+    needs:
+      - params
     outputs:
-      major: ${{ steps.changelog.outputs.major-total }}
-      minor: ${{ steps.changelog.outputs.minor-total }}
-      patch: ${{ steps.changelog.outputs.patch-total }}
-      lifecycle: ${{ steps.changelog.outputs.lifecycle-total }}
       version: ${{ steps.changelog.outputs.version-current }}
     permissions:
       contents: read
@@ -82,7 +80,7 @@ jobs:
         run: echo "root-version=$(jq --raw-output '.version' package.json)" >> $GITHUB_OUTPUT
 
       - id: changelog
-        name: Generate Changelog
+        name: Generate changelog
         uses: oliversalzburg/action-automatic-semantic-releases@db96c81b334bf45a3e971b5d46ee6b63d523a472 # v0.5.6
         with:
           changelog-artifact: changelog.json
@@ -91,7 +89,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           root-version: ${{ steps.version.outputs.root-version }}
 
-      - name: Store Changelog
+      - name: Store changelog
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: changelog.json
@@ -138,15 +136,13 @@ jobs:
         with:
           path: .yarn/cache
           key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node${{ env.NODE_VERSION }}
+          restore-keys: ${{ runner.os }}-node${{ env.NODE_VERSION }}
 
       - name: Build release
         env:
           RELEASE_CHANNEL: ${{ needs.params.outputs.release-channel }}
           RELEASE_VERSION: ${{ needs.changelog.outputs.version }}
-        run: |
-          make injectable userscript
+        run: make injectable userscript
 
       - name: Download changelog
         uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
@@ -173,7 +169,7 @@ jobs:
     needs:
       - changelog
       - params
-      - qa
+      - release
     permissions:
       contents: write
       id-token: write

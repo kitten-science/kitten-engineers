@@ -63,10 +63,6 @@ jobs:
     needs:
       - params
     outputs:
-      major: ${{ steps.changelog.outputs.major-total }}
-      minor: ${{ steps.changelog.outputs.minor-total }}
-      patch: ${{ steps.changelog.outputs.patch-total }}
-      lifecycle: ${{ steps.changelog.outputs.lifecycle-total }}
       version: ${{ steps.changelog.outputs.version-patch-dev-extended }}
     permissions:
       contents: read
@@ -141,15 +137,13 @@ jobs:
         with:
           path: .yarn/cache
           key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node${{ env.NODE_VERSION }}
+          restore-keys: ${{ runner.os }}-node${{ env.NODE_VERSION }}
 
       - name: Build release
         env:
           RELEASE_CHANNEL: ${{ needs.params.outputs.release-channel }}
           RELEASE_VERSION: ${{ needs.changelog.outputs.version }}
-        run: |
-          make injectable userscript
+        run: make injectable userscript
 
       - name: Download changelog
         uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
