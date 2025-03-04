@@ -97,7 +97,7 @@ jobs:
           path: changelog.json
 
   skip:
-    if: success() && !needs.changelog.outputs.has-changed
+    if: success() && needs.changelog.outputs.has-changed == 'false'
     name: Skip
     needs:
       - changelog
@@ -107,14 +107,14 @@ jobs:
         run: echo "No behavior changes since the last nightly were detected."
 
   qa:
-    if: success() && needs.changelog.outputs.has-changed
+    if: success() && needs.changelog.outputs.has-changed == 'true'
     name: 🔹 QA
     needs:
       - changelog
     uses: ./.github/workflows/qa.yml
 
   nightly:
-    if: success() && needs.changelog.outputs.has-changed
+    if: success() && needs.changelog.outputs.has-changed == 'true'
     name: Nightly
     needs:
       - changelog
@@ -180,7 +180,7 @@ jobs:
           with-authors: false
 
   publish-npm:
-    if: success() && needs.params.outputs.publish-npm && needs.changelog.outputs.has-changed
+    if: success() && needs.params.outputs.publish-npm == 'true' && needs.changelog.outputs.has-changed == 'true'
     name: 🔹 Publish npm
     needs:
       - changelog
