@@ -360,9 +360,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kitten-science/kitten-analysts@npm:0.0.6":
-  version: 0.0.6
-  resolution: "@kitten-science/kitten-analysts@npm:0.0.6"
+"@kitten-science/kitten-analysts@npm:0.0.8":
+  version: 0.0.8
+  resolution: "@kitten-science/kitten-analysts@npm:0.0.8"
   dependencies:
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@koa/bodyparser": "npm:5.1.1"
@@ -375,7 +375,7 @@ __metadata:
     prom-client: "npm:15.1.3"
     tslib: "npm:2.8.1"
     ws: "npm:8.18.1"
-  checksum: 10c0/bdb20fb05bfb1a3de39d312d00685542087338cc61688ca62ac6266cae96db417ecd723bb8ebdea86420723bba6acb566c4decc96a07f2844593d4a81f86b1a1
+  checksum: 10c0/82792264a7569837cc278d0e21efa1ac49b7f4e678e3c7f408b84c7086afb3fa40b4d9cd1db96b1fc71dcaa834ea2ef195bb2d352fb30d6a2f154a9dcff252a7
   languageName: node
   linkType: hard
 
@@ -384,7 +384,7 @@ __metadata:
   resolution: "@kitten-science/kitten-engineers@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@kitten-science/kitten-analysts": "npm:0.0.6"
+    "@kitten-science/kitten-analysts": "npm:0.0.8"
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@oliversalzburg/js-utils": "npm:0.2.8"
     "@types/web": "npm:0.0.208"
