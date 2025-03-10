@@ -386,7 +386,7 @@ __metadata:
     "@biomejs/biome": "npm:1.9.4"
     "@kitten-science/kitten-analysts": "npm:0.0.8"
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
-    "@oliversalzburg/js-utils": "npm:0.2.8"
+    "@oliversalzburg/js-utils": "npm:0.2.13"
     "@types/web": "npm:0.0.209"
     tslib: "npm:2.8.1"
     typescript: "npm:5.8.2"
@@ -449,6 +449,13 @@ __metadata:
   dependencies:
     semver: "npm:^7.3.5"
   checksum: 10c0/c90935d5ce670c87b6b14fab04a965a3b8137e585f8b2a6257263bd7f97756dd736cb165bb470e5156a9e718ecd99413dccc54b1138c1a46d6ec7cf325982fe5
+  languageName: node
+  linkType: hard
+
+"@oliversalzburg/js-utils@npm:0.2.13":
+  version: 0.2.13
+  resolution: "@oliversalzburg/js-utils@npm:0.2.13"
+  checksum: 10c0/367096367701fc0f5e15ce0dc4a020cdf64339da8eae5c43ebb4b683a6e255ea15c4fab6e703f931b5be3f55be69864dbe12be09f4ebc963f6b8f7d85affc36d
   languageName: node
   linkType: hard
 
