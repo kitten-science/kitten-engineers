@@ -294,10 +294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kitten-science/kitten-analysts@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@kitten-science/kitten-analysts@npm:0.0.10"
-  checksum: 10c0/b6d41cdb7a8a9754f65890e36818b31089c5cdda86b2bdb4e654cd879894cffc88c30af62c77e08e6fc9f5654f2bffb1e6e7e7c8796366470ef3bbfffada4b77
+"@kitten-science/kitten-analysts@npm:0.0.14":
+  version: 0.0.14
+  resolution: "@kitten-science/kitten-analysts@npm:0.0.14"
+  checksum: 10c0/38a46930cc2b834207fda71de7be02e25d27603de28b504357f6572857de390cf57b067002f2b65cb94e2b55b0bc48a10e37b3c9f9a2f960b9940b35f66014d9
   languageName: node
   linkType: hard
 
@@ -306,7 +306,7 @@ __metadata:
   resolution: "@kitten-science/kitten-engineers@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@kitten-science/kitten-analysts": "npm:0.0.10"
+    "@kitten-science/kitten-analysts": "npm:0.0.14"
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@oliversalzburg/js-utils": "npm:0.3.0"
     "@types/web": "npm:0.0.235"
