@@ -309,7 +309,7 @@ __metadata:
     "@kitten-science/kitten-analysts": "npm:0.0.10"
     "@kitten-science/kitten-scientists": "npm:2.0.0-beta.10-dev-ed7e6ea"
     "@oliversalzburg/js-utils": "npm:0.3.0"
-    "@types/web": "npm:0.0.240"
+    "@types/web": "npm:0.0.241"
     tslib: "npm:2.8.1"
     typescript: "npm:5.8.3"
     vite: "npm:6.3.5"
@@ -520,10 +520,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:0.0.240":
-  version: 0.0.240
-  resolution: "@types/web@npm:0.0.240"
-  checksum: 10c0/9bb0082bb134a232bde4f6dd0d9cb3bb401634ca911e28e2303b02465639cebce9322b4e13feaee5bef271a185fda087b6dfb56505dfe413dfead57a3b7e2f03
+"@types/web@npm:0.0.241":
+  version: 0.0.241
+  resolution: "@types/web@npm:0.0.241"
+  checksum: 10c0/1a7b25bf4fc9e2715a3ae164d145e3d03612834c943db6a69a442cbdcbe9b9c518d74cf7a3ec5c12f609d826081cb81eca0b76bbaf23c369226da4b1fa576a3b
   languageName: node
   linkType: hard
 
