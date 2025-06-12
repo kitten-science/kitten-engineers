@@ -14,31 +14,31 @@ git-hook:
 	echo "make pretty" > .git/hooks/pre-commit
 
 pretty: node_modules
-	yarn biome check --write --no-errors-on-unmatched
+	npm exec -- biome check --write --no-errors-on-unmatched
 	npm pkg fix
 
 lint: node_modules
-	yarn biome check .
-	yarn tsc --noEmit
+	npm exec -- biome check .
+	npm exec -- tsc --noEmit
 
 test:
 	@echo "Kitten Engineers test in production."
 
 
 node_modules:
-	yarn install
+	npm install
 
 lib: node_modules
-	yarn tsc --build
+	npm exec -- tsc --build
 
 output: node_modules
-	yarn vite --config vite.config.userscript.js build
+	npm exec -- vite --config vite.config.userscript.js build
 
 .PHONY: injectable
 injectable: node_modules
-	yarn vite --config vite.config.inject.js build
+	npm exec -- vite --config vite.config.inject.js build
 
 .PHONY: userscript
 userscript: node_modules
-	yarn vite --config vite.config.userscript.js build
-	MINIFY=true yarn vite --config vite.config.userscript.js build
+	npm exec -- vite --config vite.config.userscript.js build
+	MINIFY=true npm exec -- vite --config vite.config.userscript.js build
