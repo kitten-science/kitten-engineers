@@ -13,16 +13,6 @@ const RELEASE_CHANNEL = JSON.stringify(process.env.RELEASE_CHANNEL ?? "fixed");
 const RELEASE_VERSION = JSON.stringify(versionString);
 
 export default defineConfig({
-  plugins: [
-    metablock({
-      override: {
-        version: versionString,
-        description: manifest.description,
-        homepage: manifest.homepage,
-        supportURL: manifest.bugs.url,
-      },
-    }),
-  ],
   build: {
     emptyOutDir: false,
     lib: {
@@ -34,9 +24,9 @@ export default defineConfig({
     rollupOptions: {
       external: ["jquery"],
       output: {
+        entryFileNames: filename,
         extend: true,
         format: "umd",
-        entryFileNames: filename,
       },
     },
   },
@@ -44,4 +34,14 @@ export default defineConfig({
     RELEASE_CHANNEL,
     RELEASE_VERSION,
   },
+  plugins: [
+    metablock({
+      override: {
+        description: manifest.description,
+        homepage: manifest.homepage,
+        supportURL: manifest.bugs.url,
+        version: versionString,
+      },
+    }),
+  ],
 });
