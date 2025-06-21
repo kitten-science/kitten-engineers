@@ -5,8 +5,6 @@ import {
   Resources,
 } from "@kitten-science/kitten-scientists/types/index.js";
 import { isNil } from "@oliversalzburg/js-utils/data/nil.js";
-import { GraphPrinter } from "./GraphPrinter.js";
-import { GraphSolver, type Operator } from "./GraphSolver.js";
 import { AssignMiner } from "./examples/assign-miner-operator.js";
 import { AssignWoodcutter } from "./examples/assign-woodcutter-operator.js";
 import { BuildCatnipField } from "./examples/build-catnip-field-operator.js";
@@ -17,6 +15,8 @@ import { GatherCatnip } from "./examples/gather-catnip-operator.js";
 import { RefineCatnip } from "./examples/refine-catnip-operator.js";
 import { TradeLizards } from "./examples/trade-lizards-operator.js";
 import { TradeNagas } from "./examples/trade-nagas-operator.js";
+import { GraphPrinter } from "./GraphPrinter.js";
+import { GraphSolver, type Operator } from "./GraphSolver.js";
 import { cinfo } from "./tools/Log.js";
 
 declare global {
