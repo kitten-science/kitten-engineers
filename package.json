@@ -34,7 +34,7 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.4",
+    "@biomejs/biome": "2.2.0",
     "@types/web": "0.0.262",
     "typescript": "5.9.2",
     "vite": "7.1.2",
