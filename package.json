@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@types/web": "0.0.269",
+    "@types/web": "0.0.270",
     "typescript": "5.9.2",
     "vite": "7.1.7",
     "vite-plugin-css-injected-by-js": "3.5.2",
