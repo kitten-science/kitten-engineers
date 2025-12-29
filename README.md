@@ -1,5 +1,7 @@
 # Kitten Engineers
 
+Unmaintained prototype. Please ignore.
+
 ## Release Process
 
 ```shell
